@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Budget Template</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 750px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            color: #1a3a5c;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        h2 {
+            font-size: 20px;
+            color: #1a3a5c;
+            border-bottom: 2px solid #e8ecf1;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        h2 .section-total {
+            font-size: 16px;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        h2 .section-total.savings-total,
+        h2 .section-total.planning-total {
+            color: #2980b9;
+        }
+        h3 {
+            font-size: 16px;
+            color: #666;
+            margin: 18px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        .form-group label {
+            flex: 1;
+            font-size: 14px;
+            color: #555;
+        }
+        .form-group input[type="number"] {
+            width: 160px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            text-align: right;
+            transition: border-color 0.2s;
+        }
+        .form-group input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+        .month-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .month-selector select,
+        .month-selector input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        .month-selector input[type="number"] {
+            width: 90px;
+        }
+        .subsection {
+            margin-left: 20px;
+            padding-left: 15px;
+            border-left: 3px solid #f0f2f5;
+        }
+
+        /* Summary section */
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fb;
+            border-radius: 10px;
+            border: 1px solid #e8ecf1;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+        .summary-row.income { color: #27ae60; font-weight: 600; }
+        .summary-row.expenses { color: #e74c3c; }
+        .summary-row.savings { color: #2980b9; }
+        .summary-row.planning { color: #8e44ad; }
+        .summary-row.debt { color: #d35400; }
+        .summary-divider {
+            border-top: 2px solid #ccc;
+            margin: 10px 0;
+        }
+        .summary-row.disposable {
+            font-size: 20px;
+            font-weight: 700;
+            padding-top: 12px;
+        }
+        .summary-row.disposable.positive { color: #27ae60; }
+        .summary-row.disposable.negative { color: #e74c3c; }
+
+        /* Buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn-save { background: #27ae60; color: white; }
+        .btn-load { background: #2980b9; color: white; }
+        .btn-clear { background: #e74c3c; color: white; }
+        .btn-print { background: #8e44ad; color: white; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .toast.show { opacity: 1; }
+
+        @media print {
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; padding: 10px; }
+            .actions, .toast { display: none; }
+            .form-group input[type="number"] { border: none; }
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .form-group { flex-direction: column; align-items: stretch; gap: 4px; }
+            .form-group input[type="number"] { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monthly Budget Overview</h1>
+        <p class="subtitle">Track your income, expenses, savings & financial goals</p>
+
+        <div class="month-selector">
+            <select id="month">
+                <option>January</option><option>February</option><option>March</option>
+                <option>April</option><option selected>May</option><option>June</option>
+                <option>July</option><option>August</option><option>September</option>
+                <option>October</option><option>November</option><option>December</option>
+            </select>
+            <input type="number" id="year" value="2025" min="2020" max="2099">
+        </div>
+
+        <!-- Income -->
+        <h2>Income</h2>
+        <div class="form-group">
+            <label for="brutoIncome">Bruto Income</label>
+            <input type="number" id="brutoIncome" data-group="income" placeholder="0.00" step="0.01">
+        </div>
+
+        <!-- Expenses: Housing -->
+        <h2>Expenses <span class="section-total" id="totalExpenses">R 0.00</span></h2>
+
+        <h3>Housing</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Bond Expenses: House</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Home Loan: FNB</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Water & Rates Payments</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Electricity</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>DsTV</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Telephone Account</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <h3>Vehicle</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Vehicle Finance Incl Add. Insurance & Covers</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Transport</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Vehicle Tracking</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Car Maintenance</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <h3>General & Personal Expenses</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Insurance (Other than vehicle add-on)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Church</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Cell Contracts</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Studies: (CPUT Btech, Unisa, USB)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Internet Usage Fee</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Bank Costs</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Credit Card</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>RCP: Recollecting Credit Policy</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Medical Aid Contribution, Dr Payment, Medication</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Toiletries</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Shops (Truworths, Markhams)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Pocket Money</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <h3>Occasional & Seasonal Expenses</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Birthdays (Cakes, Presents, Parties)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Christmas (Presents, Parties)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Festive Season Travel Funds (Petrol)</label>
+                <input type="number" data-group="expenses" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <!-- Savings -->
+        <h2>Savings <span class="section-total savings-total" id="totalSavings">R 0.00</span></h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Emergency Savings</label>
+                <input type="number" data-group="savings" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Fixed Savings</label>
+                <input type="number" data-group="savings" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Retirement Savings</label>
+                <input type="number" data-group="savings" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Funeral Savings</label>
+                <input type="number" data-group="savings" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <!-- Financial Planning -->
+        <h2>Financial Planning <span class="section-total planning-total" id="totalPlanning">R 0.00</span></h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Education Plan (CPUT, Unisa, USB)</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Electronics (Tablet, Phone)</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Car Deposit / Balloon Settlement</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Computer Hardware & Software</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Appliances: (TV, Decoders, Microwaves)</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>IIA Membership</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Vacation</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>House Purchase</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Baby Expenses</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Wedding Expenses</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Loan Account (General)</label>
+                <input type="number" data-group="planning" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <!-- Debt -->
+        <h2>Debt <span class="section-total" id="totalDebt">R 0.00</span></h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label>Cell Phone Purchased (Debt Repayment)</label>
+                <input type="number" data-group="debt" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Loan Settlement</label>
+                <input type="number" data-group="debt" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Interest Re-Imbursement (Paid Out)</label>
+                <input type="number" data-group="debt" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <div class="summary-row income">
+                <span>Total Income</span>
+                <span id="summaryIncome">R 0.00</span>
+            </div>
+            <div class="summary-row expenses">
+                <span>Total Expenses</span>
+                <span id="summaryExpenses">R 0.00</span>
+            </div>
+            <div class="summary-row savings">
+                <span>Total Savings</span>
+                <span id="summarySavings">R 0.00</span>
+            </div>
+            <div class="summary-row planning">
+                <span>Total Financial Planning</span>
+                <span id="summaryPlanning">R 0.00</span>
+            </div>
+            <div class="summary-row debt">
+                <span>Total Debt</span>
+                <span id="summaryDebt">R 0.00</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row disposable" id="disposableRow">
+                <span>Disposable Income</span>
+                <span id="disposableIncome">R 0.00</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-save" onclick="saveBudget()">Save Budget</button>
+            <button class="btn btn-load" onclick="loadBudget()">Load Budget</button>
+            <button class="btn btn-clear" onclick="clearBudget()">Clear All</button>
+            <button class="btn btn-print" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function formatRand(amount) {
+            return 'R ' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function sumGroup(group) {
+            let total = 0;
+            document.querySelectorAll('input[data-group="' + group + '"]').forEach(function(input) {
+                total += parseFloat(input.value) || 0;
+            });
+            return total;
+        }
+
+        function recalculate() {
+            var income = sumGroup('income');
+            var expenses = sumGroup('expenses');
+            var savings = sumGroup('savings');
+            var planning = sumGroup('planning');
+            var debt = sumGroup('debt');
+            var disposable = income - expenses - savings - planning - debt;
+
+            document.getElementById('totalExpenses').textContent = formatRand(expenses);
+            document.getElementById('totalSavings').textContent = formatRand(savings);
+            document.getElementById('totalPlanning').textContent = formatRand(planning);
+            document.getElementById('totalDebt').textContent = formatRand(debt);
+
+            document.getElementById('summaryIncome').textContent = formatRand(income);
+            document.getElementById('summaryExpenses').textContent = formatRand(expenses);
+            document.getElementById('summarySavings').textContent = formatRand(savings);
+            document.getElementById('summaryPlanning').textContent = formatRand(planning);
+            document.getElementById('summaryDebt').textContent = formatRand(debt);
+            document.getElementById('disposableIncome').textContent = formatRand(disposable);
+
+            var row = document.getElementById('disposableRow');
+            row.classList.remove('positive', 'negative');
+            row.classList.add(disposable >= 0 ? 'positive' : 'negative');
+        }
+
+        function getBudgetKey() {
+            return 'budget_' + document.getElementById('month').value + '_' + document.getElementById('year').value;
+        }
+
+        function saveBudget() {
+            var data = {};
+            document.querySelectorAll('input[data-group]').forEach(function(input, i) {
+                data[input.dataset.group + '_' + i] = input.value;
+            });
+            data._month = document.getElementById('month').value;
+            data._year = document.getElementById('year').value;
+            localStorage.setItem(getBudgetKey(), JSON.stringify(data));
+            showToast('Budget saved for ' + data._month + ' ' + data._year);
+        }
+
+        function loadBudget() {
+            var key = getBudgetKey();
+            var raw = localStorage.getItem(key);
+            if (!raw) {
+                showToast('No saved budget found for ' + document.getElementById('month').value + ' ' + document.getElementById('year').value);
+                return;
+            }
+            var data = JSON.parse(raw);
+            document.querySelectorAll('input[data-group]').forEach(function(input, i) {
+                var val = data[input.dataset.group + '_' + i];
+                input.value = val || '';
+            });
+            recalculate();
+            showToast('Budget loaded');
+        }
+
+        function clearBudget() {
+            if (!confirm('Clear all fields?')) return;
+            document.querySelectorAll('input[data-group]').forEach(function(input) {
+                input.value = '';
+            });
+            recalculate();
+            showToast('All fields cleared');
+        }
+
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(function() { t.classList.remove('show'); }, 2000);
+        }
+
+        // Recalculate on any input change
+        document.addEventListener('input', recalculate);
+    </script>
+</body>
+</html>
