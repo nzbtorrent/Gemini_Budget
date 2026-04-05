@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Budget Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        h1 { font-size: 28px; text-align: center; }
+        h2 { font-size: 22px; }
+        h3 { font-size: 18px; color: #555; }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: calc(100% - 22px); /* Account for padding and border */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Include padding in width */
+            font-size: 16px;
+        }
+        .subsection {
+            margin-left: 25px;
+            padding-left: 15px;
+            border-left: 3px solid #f0f0f0;
+            margin-top: 10px;
+        }
+        .total-line {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px solid #a0a0a0;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .total-line input {
+            border: none;
+            background-color: transparent;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monthly Budget Overview</h1>
+
+        <div class="form-group">
+            <label for="month">Month:</label>
+            <input type="text" id="month" name="month" value="May 2025">
+        </div>
+
+        <h2>Income</h2>
+        <div class="form-group">
+            <label for="brutoIncome">Bruto Income:</label>
+            <input type="number" id="brutoIncome" name="brutoIncome" placeholder="Enter amount">
+        </div>
+
+        <h2>Expenses</h2>
+
+        <h3>Housing</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="bondExpenses">Bond Expenses: House</label>
+                <input type="number" id="bondExpenses" name="bondExpenses" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="homeLoanFNB">Home Loan : FNB</label>
+                <input type="number" id="homeLoanFNB" name="homeLoanFNB" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="waterRates">Water & Rates Payments</label>
+                <input type="number" id="waterRates" name="waterRates" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="electricity">Electricity</label>
+                <input type="number" id="electricity" name="electricity" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="dstv">DsTV</label>
+                <input type="number" id="dstv" name="dstv" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="telephoneAccount">Telephone Account</label>
+                <input type="number" id="telephoneAccount" name="telephoneAccount" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h3>Vehicle</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="vehicleFinance">Vehicle Finance Incl Add. Insurance & Covers</label>
+                <input type="number" id="vehicleFinance" name="vehicleFinance" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="transport">Transport</label>
+                <input type="number" id="transport" name="transport" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="vehicleTracking">Vehicle Tracking</label>
+                <input type="number" id="vehicleTracking" name="vehicleTracking" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="carMaintenance">Car Maintenance</label>
+                <input type="number" id="carMaintenance" name="carMaintenance" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h3>General & Personal Expenses</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="insurance">Insurance (Other than vehicle add-on)</label>
+                <input type="number" id="insurance" name="insurance" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="church">Church</label>
+                <input type="number" id="church" name="church" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="cellContracts">Cell Contracts</label>
+                <input type="number" id="cellContracts" name="cellContracts" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="studies">Studies: (CPUT Btech, Unisa, USB)</label>
+                <input type="number" id="studies" name="studies" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="internetUsage">Internet Usage Fee</label>
+                <input type="number" id="internetUsage" name="internetUsage" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="bankCosts">Bank Costs</label>
+                <input type="number" id="bankCosts" name="bankCosts" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="creditCard">Credit Card</label>
+                <input type="number" id="creditCard" name="creditCard" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="rcp">RCP: Recollecting Credit Policy</label>
+                <input type="number" id="rcp" name="rcp" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="medicalAid">Medical Aid Contribution, Dr Payment, Medication</label>
+                <input type="number" id="medicalAid" name="medicalAid" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="toiletries">Toiletries</label>
+                <input type="number" id="toiletries" name="toiletries" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="shops">Shops (Truworths, Markhams)</label>
+                <input type="number" id="shops" name="shops" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="pocketMoney">Pocket Money</label>
+                <input type="number" id="pocketMoney" name="pocketMoney" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h3>Occasional & Seasonal Expenses</h3>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="birthdays">Birthdays (Cakes, Presents, Parties)</label>
+                <input type="number" id="birthdays" name="birthdays" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="christmas">Christmas (Presents, Parties)</label>
+                <input type="number" id="christmas" name="christmas" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="festiveTravel">Festive Season Travel Funds (Petrol)</label>
+                <input type="number" id="festiveTravel" name="festiveTravel" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h2>Savings</h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="emergencySavings">Emergency Savings</label>
+                <input type="number" id="emergencySavings" name="emergencySavings" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="fixedSavings">Fixed Savings</label>
+                <input type="number" id="fixedSavings" name="fixedSavings" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="retirementSavings">Retirement Savings</label>
+                <input type="number" id="retirementSavings" name="retirementSavings" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="funeralSavings">Funeral Savings</label>
+                <input type="number" id="funeralSavings" name="funeralSavings" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h2>Financial Planning</h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="educationPlan">Education Plan (CPUT, Unisa, USB)</label>
+                <input type="number" id="educationPlan" name="educationPlan" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="electronics">Electronics (Tablet, Phone)</label>
+                <input type="number" id="electronics" name="electronics" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="carDeposit">Car Deposit / Balloon Settlement</label>
+                <input type="number" id="carDeposit" name="carDeposit" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="computerHardware">Computer Hardware & Software</label>
+                <input type="number" id="computerHardware" name="computerHardware" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="appliances">Appliances: (TV, Decoders, Microwaves)</label>
+                <input type="number" id="appliances" name="appliances" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="iiaMembership">IIA Membership</label>
+                <input type="number" id="iiaMembership" name="iiaMembership" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="vacation">Vacation</label>
+                <input type="number" id="vacation" name="vacation" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="housePurchase">House Purchase</label>
+                <input type="number" id="housePurchase" name="housePurchase" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="babyExpenses">Baby Expenses</label>
+                <input type="number" id="babyExpenses" name="babyExpenses" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="weddingExpenses">Wedding Expenses</label>
+                <input type="number" id="weddingExpenses" name="weddingExpenses" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="loanAccount">Loan Account (General)</label>
+                <input type="number" id="loanAccount" name="loanAccount" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <h2>Debt</h2>
+        <div class="subsection">
+            <div class="form-group">
+                <label for="cellPhonePurchased">Cell Phone Purchased (Debt Repayment)</label>
+                <input type="number" id="cellPhonePurchased" name="cellPhonePurchased" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="loanSettlement">Loan Settlement</label>
+                <input type="number" id="loanSettlement" name="loanSettlement" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="interestReimbursement">Interest Re-Imbursement (Paid Out)</label>
+                <input type="number" id="interestReimbursement" name="interestReimbursement" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <div class="total-line">
+            <label for="disposableIncome">Disposable Income:</label>
+            <input type="text" id="disposableIncome" name="disposableIncome" value="R 0.00" readonly>
+        </div>
+
+    </div>
+</body>
+</html>
+
